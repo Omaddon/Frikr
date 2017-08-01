@@ -24,3 +24,9 @@ class Photo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     license = models.CharField(max_length=3, choices=LICENSES)
+
+    # En Python, los métodos que comienzan con __ son privados
+    # Los que comienzan y terminan con __ son métodos especiales
+    # Aunque aparezca self como parámetro, no cuenta como uno. Realmente este método tiene 0 parámetros
+    def __unicode__(self):
+        return self.name
