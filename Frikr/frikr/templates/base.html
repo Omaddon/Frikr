@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Bienvenido a Frikr {% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'photos_home' %}">Home</a>
+    </nav>
+    <hr>
+    <section>
+        {% block section %} {% endblock %}
+    </section>
+    <hr>
+    <footer>
+        <small>Frikr Inc &copy; Todos los derechos reservados.</small>
+    </footer>
+</body>
+</html>
