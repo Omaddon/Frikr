@@ -2,7 +2,13 @@
 
 {% block section %}
 
-    <h1>Bienvenido a Frikr</h1>
+        <h1>
+            Bienvenido a Frikr
+            {% if request.user.pk is not None %}
+                {{ request.user }}
+            {% endif %}
+        </h1>
+
     <p>Frikr, hogar de los frikis</p>
 
     {% if photos_list|length > 0 %}

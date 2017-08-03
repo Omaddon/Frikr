@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Django settings for frikr project.
 
@@ -121,3 +123,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# LOGIN URL (lo creamos nosotros)
+# Cuando un usuario no está autenticado, lo redirigimos a /login
+LOGIN_URL = '/login'
+
+# LICENSES
+LICENSES = (
+    ('BBC', 'BBC Channel'),
+    ('WHO', 'Dr. Who')
+)
+
+# BADWORDS http://goo.gl/G2nCu7
+# Transformamos todos los valores en Unicode poniendo 'u' delante
+# Con esto evitamos los problemas entre strings y unicode con tildes y carácteres extraños (como la ñ)
+PROJECT_BADWORDS = [u'Abollao', u'Abrazafarolas', u'Afilasables', u'Analfabestia', u'Caracartón']

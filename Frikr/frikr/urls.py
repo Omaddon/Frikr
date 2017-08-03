@@ -29,6 +29,7 @@ urlpatterns = [
     # Photos URLs
     url(r'^$', photo_views.home, name='photos_home'),
     url(r'^photos/(?P<pk>[0-9]+)$', photo_views.detail, name='photo_detail'),
+    url(r'^photos/new$', photo_views.create, name='create_photo'),
 
     # Users URLs
     url(r'^login$', user_views.login, name='users_login'),

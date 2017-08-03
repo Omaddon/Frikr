@@ -9,7 +9,9 @@
 
     <form method="post">
         {% csrf_token %}
-        {{ login_form.as_table }}
+        <table>
+            {{ login_form.as_table }}
+        </table>
         <div>
             <button>Entrar</button>
         </div>

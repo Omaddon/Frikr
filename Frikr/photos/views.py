@@ -2,8 +2,11 @@
 
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+from photos.forms import PhotoForm
 from photos.models import Photo, PUBLIC
 
 
@@ -19,7 +22,7 @@ def home(request):
     context = {
         'photos_list': photos[:5]
     }
-
+    user = request.user.pk
     return render(request, 'photos/home.html', context)
 
 
@@ -54,3 +57,36 @@ def detail(request, pk):
     else:
         # 404 Not Found
         return HttpResponseNotFound('No existe la foto.')
+
+# Decorador que indica que se requiere estar logueado para poder usar el create
+
+@login_required()
+def create(request):
+    """
+    Muestra un formulario para crear una foto y la crea si la petición es POST
+    :param request: HttpRequest
+    :return: HttpResponse
+    """
+    success_message = ''
+    if request.method == 'GET':
+        form = PhotoForm()
+    else:
+        # Creamos un modelo vacío con nuestro 'owner' para pasárselo al form (owner no aparece en el form)
+        photo_with_owner = Photo()
+        photo_with_owner.owner = request.user
+
+        form = PhotoForm(request.POST, instance=photo_with_owner)
+        if form.is_valid():
+            # Guarda el objeto y nos lo devuelve
+            new_photo = form.save()
+            form = PhotoForm()
+            success_message = 'Guardado con éxito! '
+            success_message += '<a href="{0}">'.format(reverse('photo_detail', args=[new_photo.pk]))
+            success_message += 'Ver foto'
+            success_message += '</a>'
+
+    context = {
+        'form': form,
+        'success_message': success_message
+    }
+    return render(request, 'photos/new_photo.html', context)
