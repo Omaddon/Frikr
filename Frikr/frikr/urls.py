@@ -18,13 +18,19 @@ Including another URLconf
 
 from django.conf.urls import url
 from django.contrib import admin
-from photos import views
+from photos import views as photo_views
+from users import views as user_views
 
 # Con la 'r' le indicamos que es un regexp: ^ principio de cadena, $ fin de cadena
 # (?P<pk>) le decimos que capture ese dato y lo guarde en una variable llamada pk (primary key)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    url(r'^$', views.home,name='photos_home'),
-    url(r'^photos/(?P<pk>[0-9]+)$', views.detail, name='photo_detail')
+    # Photos URLs
+    url(r'^$', photo_views.home, name='photos_home'),
+    url(r'^photos/(?P<pk>[0-9]+)$', photo_views.detail, name='photo_detail'),
+
+    # Users URLs
+    url(r'^login$', user_views.login, name='users_login'),
+    url(r'^logout$', user_views.logout, name='users_logout')
 ]
