@@ -19,7 +19,10 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from photos import views as photo_views
-from users import views as user_views
+
+from photos.views import HomeView, DetailView, CreateView
+from users.views import LoginView, LogoutView
+
 
 # Con la 'r' le indicamos que es un regexp: ^ principio de cadena, $ fin de cadena
 # (?P<pk>) le decimos que capture ese dato y lo guarde en una variable llamada pk (primary key)
@@ -27,11 +30,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # Photos URLs
-    url(r'^$', photo_views.home, name='photos_home'),
-    url(r'^photos/(?P<pk>[0-9]+)$', photo_views.detail, name='photo_detail'),
-    url(r'^photos/new$', photo_views.create, name='create_photo'),
+    url(r'^$', HomeView.as_view(), name='photos_home'),
+    url(r'^photos/(?P<pk>[0-9]+)$', DetailView.as_view(), name='photo_detail'),
+    url(r'^photos/new$', CreateView.as_view(), name='create_photo'),
 
     # Users URLs
-    url(r'^login$', user_views.login, name='users_login'),
-    url(r'^logout$', user_views.logout, name='users_logout')
+    url(r'^login$', LoginView.as_view(), name='users_login'),
+    url(r'^logout$', LogoutView.as_view(), name='users_logout')
 ]
