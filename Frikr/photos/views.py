@@ -45,7 +45,9 @@ def detail(request, pk):
 
     # Esta opción es más elegante y legible
     # pk=pk busca por el atributo primario de búsqueda, sea cual sea. En nuestro caso, el id "pregenerado" por Django
-    possible_photos = Photo.objects.filter(pk=pk)
+    # Con 'select_related()' hacemos una especie de join de tablas de la bd para que se traiga más cosas de la bd
+    # Con 'prefetch_related()' hacemos lo mismo pero a la inversa. Traemos las photos relacionadas con un user
+    possible_photos = Photo.objects.filter(pk=pk).select_related('owner')
     photo = possible_photos[0] if len(possible_photos) == 1 else None
 
     if photo is not  None:
