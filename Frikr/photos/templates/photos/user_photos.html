@@ -2,7 +2,11 @@
 
 {% block section %}
 
-    <h1>Mis fotos</h1>
+    <h1>Mis fotos -
+        {% if request.user.pk is not None %}
+            {{ request.user }}
+        {% endif %}
+    </h1>
 
     {% include 'photos/photos_loop.html' with photos_list=object_list %}
 
