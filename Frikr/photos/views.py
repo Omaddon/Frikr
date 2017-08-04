@@ -6,13 +6,35 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View
+from django.db.models import Q
 
 # Create your views here.
 from photos.forms import PhotoForm
 from photos.models import Photo, PUBLIC
 
 
+class PhotosQuerySet(object):
+
+    def get_photos_queryset(self, request):
+        if not request.user.is_authenticated():
+            photos = Photo.objects.filter(visibility=PUBLIC)
+        elif request.user.is_superuser:
+            photos = Photo.objects.all()
+        else:
+            # Esta operación de query nos hace un AND. Queremos un OR!!
+            #photos = Photo.objects.filter(owner=request.user, visibility=PUBLIC)
+
+            # Con esto hacemos un OR de búsqueda
+            photos = Photo.objects.filter(Q(owner=request.user) | Q(visibility=PUBLIC))
+
+        # Realmente no nos devuelve las fotos, sino un "query configurada" para realizar la búsqueda.
+        # No se irá a buscar a la bd hasta que realmente se vayan a usar los datos.
+        # Por ello, en DetailView podemos seguir configurando la query antes de lanzar la búsqueda.
+        return photos
+
+
 class HomeView(View):
+
     def get(self, request):
         """
         Esta función devielve el home de mi página
@@ -29,7 +51,7 @@ class HomeView(View):
         return render(request, 'photos/home.html', context)
 
 
-class DetailView(View):
+class DetailView(View, PhotosQuerySet):
 
     def get(self, request, pk):
         """
@@ -54,7 +76,7 @@ class DetailView(View):
         # Con 'select_related()' hacemos una especie de join de tablas de la bd para que se traiga
         # más cosas de la bd
         # Con 'prefetch_related()' hacemos lo mismo pero a la inversa. Traemos las photos relacionadas con un user
-        possible_photos = Photo.objects.filter(pk=pk).select_related('owner')
+        possible_photos = self.get_photos_queryset(request).filter(pk=pk).select_related('owner')
         photo = possible_photos[0] if len(possible_photos) == 1 else None
 
         if photo is not  None:
@@ -116,3 +138,22 @@ class CreateView(View):
             'success_message': success_message
         }
         return render(request, 'photos/new_photo.html', context)
+
+
+class ListView(View, PhotosQuerySet):
+
+    def get(self, request):
+        """
+        Devuelve:
+            - Las fotos públicas si el user no está autenticado
+            - Las fotos del user logueado O las públicas de otros
+            - Todas las fotos si el user logueado es admin
+        :param request: HttpRequest
+        :return: HttpResponse
+        """
+
+        context = {
+            'photos': self.get_photos_queryset(request)
+        }
+
+        return render(request, 'photos/photos_list.html', context)

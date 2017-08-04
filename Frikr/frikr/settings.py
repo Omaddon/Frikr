@@ -131,11 +131,14 @@ LOGIN_URL = '/login'
 
 # LICENSES
 LICENSES = (
+    ('RIG', 'Copyright'),
+    ('LEF', 'Copyleft'),
+    ('CC', 'Creative Commons'),
     ('BBC', 'BBC Channel'),
     ('WHO', 'Dr. Who')
 )
 
 # BADWORDS http://goo.gl/G2nCu7
 # Transformamos todos los valores en Unicode poniendo 'u' delante
-# Con esto evitamos los problemas entre strings y unicode con tildes y carácteres extraños (como la ñ)
+# Con esto evitamos los problemas entre strings y unicode con tildes y carácteres extraños (como la ñ).
 PROJECT_BADWORDS = [u'Abollao', u'Abrazafarolas', u'Afilasables', u'Analfabestia', u'Caracartón']
