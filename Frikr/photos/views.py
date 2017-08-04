@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import View
+from django.views.generic import View, ListView
 from django.db.models import Q
 
 # Create your views here.
@@ -140,7 +140,7 @@ class CreateView(View):
         return render(request, 'photos/new_photo.html', context)
 
 
-class ListView(View, PhotosQuerySet):
+class PhotoListView(View, PhotosQuerySet):
 
     def get(self, request):
         """
@@ -157,3 +157,17 @@ class ListView(View, PhotosQuerySet):
         }
 
         return render(request, 'photos/photos_list.html', context)
+
+
+class UserPhotosView(ListView):
+    # CLASE GENÉRICA
+    # Tan solo le indicamos el modelo y la plantilla a renderizar
+    # Por defecto, nos devuelve la lista de objetos del tipo del modelo en "object_list"
+    model = Photo
+    template_name = 'photos/user_photos.html'
+
+    # Le indicamos que queremos filtrar los modelos por el usuario logueado
+    def get_queryset(self):
+        queryset = super(UserPhotosView, self).get_queryset()
+
+        return queryset.filter(owner=self.request.user)
