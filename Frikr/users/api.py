@@ -8,6 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 
 from users.serializers import UserSerializer
 
@@ -31,10 +32,22 @@ class UserListAPI(APIView):
 
     def get(self, request):
         users = User.objects.all()
+        # Como nos traemos todos los objetos del tirón, la paginación no es automática tras añadir
+        # la variable REST_FRAMEWORK en los settings. Hay que hacer lo siguiente para la paginación
+        # en el caso de los users (repito, por traerlo de golpe en lugar de hacer listados y filtros)
+
+        # Instancio el paginador
+        paginator = PageNumberPagination()
+
+        # Paginar queryset
+        paginator.paginate_queryset(users, request)
+
         serializer = UserSerializer(users, many=True)
         serialized_user = serializer.data               # Lista de diccionarios
 
-        return Response(serialized_user)
+        # Devolver respuesta paginada
+        #return Response(serialized_user)
+        return paginator.get_paginated_response(serialized_user)
 
     def post(self, request):
         # OJO!! Con REST, te guardará los datos en 'data', en lugar de POST, etc.

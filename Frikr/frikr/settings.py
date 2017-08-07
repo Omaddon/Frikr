@@ -143,3 +143,10 @@ LICENSES = (
 # Transformamos todos los valores en Unicode poniendo 'u' delante
 # Con esto evitamos los problemas entre strings y unicode con tildes y carácteres extraños (como la ñ).
 PROJECT_BADWORDS = [u'Abollao', u'Abrazafarolas', u'Afilasables', u'Analfabestia', u'Caracartón']
+
+# Settings personalizado para la paginación de listados
+# REST FRAMEWORK SETTINGS
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 3,
+}

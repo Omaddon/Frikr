@@ -5,7 +5,7 @@
 #from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from photos.serializer import PhotoSerializer
+from photos.serializer import PhotoSerializer, PhotoListSerializer
 from photos.models import Photo
 
 
@@ -22,7 +22,13 @@ from photos.models import Photo
 class PhotoListAPI(ListCreateAPIView):
 
     queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
+    serializer_class = PhotoListSerializer
+
+    # Tenemos que llamar a este método (que nos proporciona REST) para poder hacer POST, ya que
+    # de otro modo daría error al usar el PhotoListSerializer, pues le faltarían campos. Fijarse
+    # que en el PhotoListSerializer solo "mostramos/accedemos" al id, name y url.
+    def get_serializer_class(self):
+        return PhotoSerializer if self.request.method == 'POST' else PhotoListSerializer
 
 
 class PhotoDetailAPI(RetrieveUpdateDestroyAPIView):
