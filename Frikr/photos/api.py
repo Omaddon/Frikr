@@ -4,7 +4,7 @@
 #from rest_framework.response import Response
 #from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from photos.serializer import PhotoSerializer, PhotoListSerializer
 from photos.models import Photo
 
@@ -22,7 +22,9 @@ from photos.models import Photo
 class PhotoListAPI(ListCreateAPIView):
 
     queryset = Photo.objects.all()
-    serializer_class = PhotoListSerializer
+    #serializer_class = PhotoListSerializer
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     # Tenemos que llamar a este método (que nos proporciona REST) para poder hacer POST, ya que
     # de otro modo daría error al usar el PhotoListSerializer, pues le faltarían campos. Fijarse
@@ -35,3 +37,4 @@ class PhotoDetailAPI(RetrieveUpdateDestroyAPIView):
 
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
