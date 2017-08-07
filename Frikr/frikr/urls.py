@@ -16,14 +16,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from rest_framework.routers import DefaultRouter
 
 from photos.views import HomeView, DetailView, CreateView, PhotoListView, UserPhotosView
 from users.views import LoginView, LogoutView
 from users.api import UserListAPI, UserDetailAPI
-from photos.api import PhotoListAPI, PhotoDetailAPI
+from photos.api import PhotoViewSet
+#from photos.api import PhotoListAPI, PhotoDetailAPI
+
+
+# APIRouter
+router = DefaultRouter(trailing_slash=False)
+router.register(r'api/1.0/photos', PhotoViewSet)
 
 
 # Con la 'r' le indicamos que es un regexp: ^ principio de cadena, $ fin de cadena
@@ -39,8 +46,11 @@ urlpatterns = [
     url(r'^photos/new$', CreateView.as_view(), name='create_photo'),
 
     # Photos API URLs
-    url(r'^api/1.0/photos/$', PhotoListAPI.as_view(), name='photo_list_api'),
-    url(r'^api/1.0/photos/(?P<pk>[0-9]+)$', PhotoDetailAPI.as_view(), name='photo_detail_api'),
+    # SIN ROUTER
+    # url(r'^api/1.0/photos/$', PhotoListAPI.as_view(), name='photo_list_api'),
+    # url(r'^api/1.0/photos/(?P<pk>[0-9]+)$', PhotoDetailAPI.as_view(), name='photo_detail_api'),
+    # CON ROUTER
+    include(router.urls),
 
     # Users URLs
     url(r'^login$', LoginView.as_view(), name='users_login'),
