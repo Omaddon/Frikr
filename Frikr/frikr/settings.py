@@ -151,4 +151,4 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 3,
 }
 
-APPEND_SLASH = False
+#APPEND_SLASH = False
